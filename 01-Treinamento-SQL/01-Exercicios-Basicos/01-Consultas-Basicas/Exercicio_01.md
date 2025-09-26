@@ -20,9 +20,17 @@ Lembre-se de usar o schema `decisionscard` antes do nome da tabela.
 ## ✍️ Sua Resposta
 
 ```sql
--- Escreva sua query aqui
+select
 
+	id_cliente,
+	nm_cliente,
+	dt_nascimento,
+	dt_cadastro
+	
+from decisionscard.t_cliente
+order by dt_cadastro
 
+limit 10;
 ```
 
 ---
