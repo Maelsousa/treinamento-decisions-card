@@ -17,8 +17,12 @@ Contas ativas representam o potencial de receita da empresa. É um indicador imp
 ## ✍️ Sua Resposta
 
 ```sql
--- Escreva sua query aqui
+select
 
+	COUNT(tc.fl_status_conta) as Contas_Ativas
+
+from decisionscard.t_cliente tc 
+where tc.fl_status_conta = 'A';
 
 ```
 
