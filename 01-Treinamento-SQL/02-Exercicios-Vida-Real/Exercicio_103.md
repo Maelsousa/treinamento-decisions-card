@@ -17,9 +17,11 @@ Contas ativadas representam clientes que não apenas se cadastraram, mas efetiva
 ## ✍️ Sua Resposta
 
 ```sql
--- Escreva sua query aqui
-
-
+SELECT COUNT(DISTINCT tc.id_cliente)
+FROM decisionscard.t_cliente tc 
+JOIN decisionscard.t_venda tv
+ON tc.id_cliente = tv.id_cliente 
+WHERE tc.fl_status_conta = 'A'  AND tv.fl_status_venda = 'A';
 ```
 
 ---
