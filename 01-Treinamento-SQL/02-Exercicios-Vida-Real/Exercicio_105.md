@@ -19,9 +19,14 @@ Alto percentual de bloqueios pode indicar problemas na política de crédito ou 
 ## ✍️ Sua Resposta
 
 ```sql
--- Escreva sua query aqui
-
-
+SELECT
+	(SELECT COUNT(DISTINCT tc.id_cliente)  FROM decisionscard.t_cliente tc) AS total_contas, -- total de clientes
+	(SELECT COUNT(DISTINCT tbc.id_bloqueio_cliente) FROM decisionscard.t_bloqueio_cliente tbc WHERE tbc.fl_liberado = 'N') AS contas_bloqueadas, -- total de contas bloqueadas ainda ativas
+	ROUND( -- calcula a porcentagem de contas bloqueadas referente ao total de clientes
+		((SELECT count(DISTINCT tbc.id_bloqueio_cliente)::FLOAT FROM decisionscard.t_bloqueio_cliente tbc WHERE tbc.fl_liberado = 'N') 
+		/ NULLIF((SELECT count(DISTINCT tc.id_cliente) FROM decisionscard.t_cliente tc), 0) * 100)::NUMERIC, 2) AS porcentual_bloqueadas
+FROM decisionscard.t_cliente tc
+LIMIT 1;
 ```
 
 ---
