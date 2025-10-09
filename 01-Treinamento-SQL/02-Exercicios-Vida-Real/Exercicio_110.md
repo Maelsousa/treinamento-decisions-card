@@ -25,9 +25,27 @@ O acompanhamento mensal com acumulado e média móvel permite identificar tendê
 ## ✍️ Sua Resposta
 
 ```sql
--- Escreva sua query aqui
-
-
+WITH CTE_12MONTH AS
+( 
+SELECT 
+    id_cliente,
+    TO_CHAR(dt_cadastro, 'YYYY-MM') AS ano_mes
+FROM decisionscard.t_cliente 
+WHERE dt_cadastro >= (SELECT MAX(dt_cadastro) - INTERVAL '12 MONTH' FROM decisionscard.t_cliente)
+)
+SELECT 
+    ano_mes,
+    COUNT(id_cliente)                                                                                        AS contas_mes,
+    SUM(COUNT(id_cliente)) OVER(ORDER BY ano_mes)                                                            AS contas_acumulado,
+    ROUND( 
+    COALESCE(COUNT(id_cliente)::NUMERIC / LAG(COUNT(id_cliente)) OVER(ORDER BY ano_mes)*100 , 0)     	             
+    ,2)                                                                                                      AS crescimento_mensal,
+    ROUND( 
+    AVG(COUNT(id_cliente)) OVER (ORDER BY ano_mes ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)                  
+    ,2)                                                                                                      AS media_movel_3m
+FROM CTE_12MONTH
+GROUP BY ano_mes
+ORDER BY ano_mes;
 ```
 
 ---
