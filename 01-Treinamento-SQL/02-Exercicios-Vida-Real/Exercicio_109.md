@@ -27,9 +27,45 @@ A evolução trimestral permite identificar sazonalidades e avaliar o impacto de
 ## ✍️ Sua Resposta
 
 ```sql
--- Escreva sua query aqui
-
-
+WITH Contas_Por_periodo AS
+(
+    SELECT 
+        EXTRACT(YEAR FROM TC.dt_cadastro)                                                                              AS ano,
+        EXTRACT(quarter FROM TC.dt_cadastro)                                                                           AS trimestre,
+        TO_CHAR(TC.dt_cadastro, 'YYYY')||'-T'||EXTRACT(quarter FROM  TC.dt_cadastro)                                   AS periodo,
+        COUNT(TC.id_cliente)                                                                                           AS contas_cadastradas,
+        SUM(CASE
+            WHEN TC.fl_status_conta = 'A' THEN 1 
+            ELSE 0
+        END )                                                                                                          AS contas_ativas
+    FROM decisionscard.t_cliente TC
+        WHERE TC.dt_cadastro >= 
+        (
+        SELECT MAX(dt_cadastro) - INTERVAL '2 YEAR' FROM decisionscard.t_cliente
+        )
+    GROUP BY 
+        ano,
+        trimestre,
+        periodo
+    ORDER BY
+        ano, trimestre
+)
+SELECT
+ano,
+trimestre,
+periodo,
+contas_cadastradas,
+contas_ativas,
+ROUND
+(
+(COALESCE(contas_ativas, 0)::DECIMAL / NULLIF(contas_cadastradas, 0))* 100, 2 
+)                                                                                                                      AS taxa_ativacao,
+ROUND (
+    COALESCE(
+        NULLIF(contas_cadastradas, 0)::DECIMAL / NULLIF(LAG(contas_cadastradas)OVER(ORDER BY periodo), 0)*100
+        , 0)
+, 2)                                                                                                                   AS crescimento_cadastro
+FROM Contas_Por_periodo;
 ```
 
 ---
