@@ -17,9 +17,9 @@ O total de cartões emitidos é um indicador operacional importante para logíst
 ## ✍️ Sua Resposta
 
 ```sql
--- Escreva sua query aqui
-
-
+SELECT
+    COUNT(id_cartao)
+FROM decisionscard.t_cartao
 ```
 
 ---
@@ -30,4 +30,3 @@ O total de cartões emitidos é um indicador operacional importante para logíst
 - [ ] Conta todos os cartões da tabela
 - [ ] Retorna apenas um número
 - [ ] Usa a tabela t_cartao corretamente
-
