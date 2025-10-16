@@ -18,7 +18,7 @@ O total de cartões emitidos é um indicador operacional importante para logíst
 
 ```sql
 SELECT
-    COUNT(id_cartao)
+    COUNT(id_cartao) AS Total_de_cartoes
 FROM decisionscard.t_cartao
 ```
 
