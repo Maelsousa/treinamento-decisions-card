@@ -25,6 +25,8 @@ Identificar quais origens comerciais geram mais clientes e qual a qualidade dess
 ## ✍️ Sua Resposta
 
 ```sql
+WITH CONTAS AS 
+(
 SELECT
         TR.nm_fantasia,
         COUNT(DISTINCT TC.id_cliente) AS quantidade_contas,
@@ -39,7 +41,7 @@ SELECT
     C.quantidade_contas,
     ROUND 
     (
-    COALESCE(C.quantidade_contas, 0S)::DECIMAL / SUM(NULLIF(C.quantidade_contas, 0))OVER()*100, 2
+    COALESCE(C.quantidade_contas, 0)::DECIMAL / SUM(NULLIF(C.quantidade_contas, 0))OVER()*100, 2
     ) AS percentual_total,
     C.contas_ativas,
     ROUND 
